@@ -13,12 +13,22 @@ const ChatContainer = () => {
     const messageEndRef = useRef(null)
 
     useEffect(() => {
+        console.log("🧠 selectedUser (raw):", selectedUser);
+        console.log("🧠 selectedUser._id:", selectedUser?._id);
+    
+        if (!selectedUser || !selectedUser._id || selectedUser._id.length !== 24) {
+            console.warn("❌ Skipping getMessages due to invalid user");
+            return;
+        }
+    
         getMessages(selectedUser._id);
-
         subscribeToMessages();
-
+    
         return () => unSubscribeFromMessages();
-    }, [selectedUser._id, getMessages]);
+    }, [selectedUser?._id]);
+    
+    
+    
 
     useEffect(() => { 
         if(messageEndRef.current && messages){

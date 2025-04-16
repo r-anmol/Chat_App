@@ -23,6 +23,7 @@ export const useChatStore = create((set, get) => ({
   },
 
   getMessages: async (userId) => {
+    console.log("DEBUG - userId passed to getMessages:", userId);
     if (!userId || typeof userId !== "string" || userId.length !== 24) {
       toast.error("Invalid user ID");
       return;

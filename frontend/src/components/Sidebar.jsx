@@ -3,11 +3,13 @@ import { useChatStore } from '../store/useChatStore';
 import SidebarSkeleton from './skeletons/SidebarSkeleton';
 import { Users } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
+import toast from 'react-hot-toast';
 
 const Sidebar = () => {
   const { getUsers, users, selectedUser, isUsersLoading, setSelectedUser } = useChatStore();
   const { onlineUsers } = useAuthStore(); 
   const [showOnlineOnly , setShowOnlineOnly] = useState(false);
+
   useEffect(() => {
     getUsers();
   }, [getUsers]);
@@ -23,7 +25,7 @@ const Sidebar = () => {
           <Users className="size-6" />
           <span className="font-medium hidden lg:block">Contacts</span>
         </div>
-        {/* Online Filter Toggle (optional) */}
+
         <div className="mt-3 hidden lg:flex items-center gap-2">
           <label className="cursor-pointer flex items-center gap-2">
             <input
@@ -36,14 +38,20 @@ const Sidebar = () => {
           </label>
           <span className="text-xs text-zinc-500">({onlineUsers.length - 1} online)</span>
         </div>
-
       </div>
 
       <div className="flex-1 overflow-y-auto w-full py-3">
         {filteredUsers.map((user) => (
           <button
             key={user._id}
-            onClick={() => setSelectedUser(user)}
+            onClick={() => {
+              if (user && user._id && user._id.length === 24) {
+                setSelectedUser(user);
+              } else {
+                console.error("❌ Invalid user object:", user);
+                toast.error("Invalid user selected.");
+              }
+            }}
             className={`
               w-full p-3 flex items-center gap-3
               hover:bg-base-300 transition-colors
@@ -81,5 +89,5 @@ const Sidebar = () => {
     </aside>
   );
 };
- 
+
 export default Sidebar;
