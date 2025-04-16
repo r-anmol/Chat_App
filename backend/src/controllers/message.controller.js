@@ -15,24 +15,29 @@ export const getUsersForSidebar = async(req , res) => {
         res.status(500).json({error : "Internal Server Error"});
     }
 }
-
-export const getMessages = async(req , res) => {
+export const getMessages = async (req, res) => {
     try {
-        const {id : userToChatId} = req.params;
+        const { id: userToChatId } = req.params;
         const myId = req.user._id;
 
+        // ✅ Validate ObjectId
+        if (!mongoose.Types.ObjectId.isValid(userToChatId)) {
+            return res.status(400).json({ message: "Invalid user ID" });
+        }
+
         const messages = await Message.find({
-            $or:[
-                {senderId:myId , receiverId : userToChatId},
-                {senderId: userToChatId , receiverId: myId},
-            ]
-        })
+            $or: [
+                { senderId: myId, receiverId: userToChatId },
+                { senderId: userToChatId, receiverId: myId },
+            ],
+        });
+
         res.status(200).json(messages);
     } catch (error) {
-        console.log("Error in getMessages controller : " , error.message);
-        res.status(500).json({error : "Internal Server Error"});
+        console.log("Error in getMessages controller:", error.message);
+        res.status(500).json({ error: "Internal Server Error" });
     }
-}
+};
 
 export const sendMessage = async(req ,res) => {
     try {
