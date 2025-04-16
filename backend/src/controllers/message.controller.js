@@ -3,6 +3,7 @@ import Message from "../models/message.model.js";
 import cloudinary from "../lib/cloudinary.js"
 import { getRecieverSocketId } from "../lib/socket.js";
 import { io } from "../lib/socket.js";
+import mongoose from "mongoose";
 
 export const getUsersForSidebar = async(req , res) => {
     try {
